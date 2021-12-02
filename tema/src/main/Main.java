@@ -1,15 +1,17 @@
 package main;
 
-import checker.Checkstyle;
 import checker.Checker;
+import checker.Checkstyle;
 import common.Constants;
 import database.Action;
-import database.ActionManagement;
+import database.commands.ActionManagement;
 import database.Database;
+import database.DatabaseServices;
 import fileio.Input;
 import fileio.InputLoader;
 import fileio.Writer;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import database.DatabaseServices;
-import org.json.simple.JSONObject;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -86,7 +86,8 @@ public final class Main {
         int id = 1;
 
         for (Action c: database.getCommands()) {
-            JSONObject res = fileWriter.writeFile(id, ActionManagement.manageActions(c,database));
+            JSONObject res = fileWriter.writeFile(id,
+                    ActionManagement.manageActions(c, database));
             arrayResult.add(res);
             id++;
         }

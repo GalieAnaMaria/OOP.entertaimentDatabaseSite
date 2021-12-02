@@ -4,15 +4,38 @@ import actor.ActorsAwards;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Actor {
+/**
+ *  Information about an actor obtained from
+ *  input through the DatabaseServices class
+ */
+public final class Actor {
+    /**
+     * Actor name
+     */
     private String name;
+    /**
+     * Text description for the actor's career
+     */
     private String careerDescription;
+    /**
+     * Movies in which the actor was featured
+     */
     private ArrayList<String> filmography;
+    /**
+     * Awards won by actor
+     */
     private Map<ActorsAwards, Integer> awards;
+    /**
+     * The rating average of the actor's filmography
+     */
     private double averageFilmography;
+    /**
+     * The numbers of awards won (total or per genre)
+     */
     private int awardsNumber;
 
-    public Actor() {}
+    public Actor() {
+    }
 
     public String getName() {
         return name;
@@ -34,7 +57,7 @@ public class Actor {
         return awards;
     }
 
-    public void setAwards(Map<ActorsAwards, Integer> awards) {
+    public void setAwards(final Map<ActorsAwards, Integer> awards) {
         this.awards = awards;
     }
 
@@ -50,7 +73,7 @@ public class Actor {
         return averageFilmography;
     }
 
-    public void setAverageFilmography(double averageFilmography) {
+    public void setAverageFilmography(final double averageFilmography) {
         this.averageFilmography = averageFilmography;
     }
 
@@ -58,7 +81,7 @@ public class Actor {
         return awardsNumber;
     }
 
-    public void setAwardsNumber(int awardsNumber) {
+    public void setAwardsNumber(final int awardsNumber) {
         this.awardsNumber = awardsNumber;
     }
 }

@@ -1,20 +1,30 @@
 package database;
 
-import fileio.*;
-
+import common.Constants;
+import database.commands.Util;
+import fileio.ActionInputData;
+import fileio.ActorInputData;
+import fileio.Input;
+import fileio.MovieInputData;
+import fileio.SerialInputData;
+import fileio.UserInputData;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.ArrayList;
-import java.util.List;
-import common.Constants;
-import database.ActionManagement;
 
-import javax.xml.crypto.Data;
-
-public class DatabaseServices {
-
-    public void insert(Input input, Database database) {
+/**
+ * Class responsible for creating the objects
+ * which will hold the information from input and
+ * also inserting said input data into the database
+ */
+public final class DatabaseServices {
+    /**
+     * Method redirecting the data from inputs corresponding to each object type needed
+     * At the end calls the method responsible for setting the favourite counter for shows
+     */
+    public void insert(final Input input, final Database database) {
         AtomicInteger idCount = new AtomicInteger(0);
 
         this.insertActors(input.getActors(), database);
@@ -25,7 +35,10 @@ public class DatabaseServices {
         this.setFavoriteCounter(database);
     }
 
-    private void insertActors(List<ActorInputData> actorsData, Database database) {
+    /**
+     * Method creating the (actor) objects and inserting them in the afferent list in database
+     */
+    private void insertActors(final List<ActorInputData> actorsData, final Database database) {
         if (actorsData != null) {
             List<Actor> actorsList = new ArrayList<>();
 
@@ -46,7 +59,10 @@ public class DatabaseServices {
         }
     }
 
-    private void insertUsers(List<UserInputData> usersData, Database database) {
+    /**
+     * Method creating the (user) objects and inserting them in the afferent list in database
+     */
+    private void insertUsers(final List<UserInputData> usersData, final Database database) {
         if (usersData != null) {
             List<User> usersList = new ArrayList<>();
 
@@ -66,7 +82,11 @@ public class DatabaseServices {
         }
     }
 
-    private void insertMovies(List<MovieInputData> moviesData, Database database, AtomicInteger idCount) {
+    /**
+     * Method creating the (movies) objects and inserting them in the afferent list in database
+     */
+    private void insertMovies(final List<MovieInputData> moviesData,
+                              final Database database, final AtomicInteger idCount) {
         if (moviesData != null) {
             List<Movie> moviesList = new ArrayList<>();
 
@@ -92,11 +112,15 @@ public class DatabaseServices {
         }
     }
 
-    private void insertSerials(List<SerialInputData> serialsData, Database database, AtomicInteger idCount) {
+    /**
+     * Method creating the (serials) objects and inserting them in the afferent list in database
+     */
+    private void insertSerials(final List<SerialInputData> serialsData,
+                               final Database database, final AtomicInteger idCount) {
         if (serialsData != null) {
             List<Serial> serialsList = new ArrayList<>();
 
-            for (SerialInputData s: serialsData) {
+            for (SerialInputData s : serialsData) {
                 Serial newSerial = new Serial();
                 ArrayList<Season> seasonsList = new ArrayList<>();
                 AtomicInteger count = new AtomicInteger(0);
@@ -132,11 +156,14 @@ public class DatabaseServices {
         }
     }
 
-    private void insertCommands(List<ActionInputData> commandsData, Database database) {
+    /**
+     * Method creating the (command) objects and inserting them in the afferent list in database
+     */
+    private void insertCommands(final List<ActionInputData> commandsData, final Database database) {
         if (commandsData != null) {
             List<Action> actionList = new ArrayList<>();
 
-            for (ActionInputData c: commandsData) {
+            for (ActionInputData c : commandsData) {
                 Action newCommand = new Action();
 
                 newCommand.setActionId(c.getActionId());
@@ -147,25 +174,23 @@ public class DatabaseServices {
                     newCommand.setUsername(c.getUsername());
                     newCommand.setGenre(c.getGenre());
 
-                }
-                else if (newCommand.getActionType().equals(Constants.COMMAND)) {
+                } else if (newCommand.getActionType().equals(Constants.COMMAND)) {
                     newCommand.setType(c.getType());
                     newCommand.setUsername(c.getUsername());
                     newCommand.setGrade(c.getGrade());
                     newCommand.setTitle(c.getTitle());
                     newCommand.setSeasonNumber(c.getSeasonNumber());
-                }
-                else if (newCommand.getActionType().equals(Constants.QUERY)) {
+                } else if (newCommand.getActionType().equals(Constants.QUERY)) {
                     List<List<String>> commandFilters = new ArrayList<>();
 
                     newCommand.setObjectType(c.getObjectType());
                     newCommand.setSortType(c.getSortType());
                     newCommand.setCriteria(c.getCriteria());
                     newCommand.setNumber(c.getNumber());
-                    commandFilters.add(c.getFilters().get(0));
-                    commandFilters.add(c.getFilters().get(1));
-                    commandFilters.add(c.getFilters().get(2));
-                    commandFilters.add(c.getFilters().get(3));
+                    commandFilters.add(c.getFilters().get(Constants.ZERO));
+                    commandFilters.add(c.getFilters().get(Constants.ONE));
+                    commandFilters.add(c.getFilters().get(Constants.TWO));
+                    commandFilters.add(c.getFilters().get(Constants.THREE));
                     newCommand.setFilters(commandFilters);
                 }
 
@@ -176,15 +201,16 @@ public class DatabaseServices {
         }
     }
 
-    private void setFavoriteCounter(Database database) {
-        for (User u: database.getUsers()) {
-            for (Movie m: database.getMovies()) {
-                if(u.getFavorite().contains(m.getTitle())) {
-                    m.setFavoriteCounter(m.getFavoriteCounter() + 1);
-                }
-            }
-            for (Serial s: database.getSerials()) {
-                if(u.getFavorite().contains(s.getTitle())) {
+    /**
+     * Method setting the favorite counter for each show based on the data
+     * which each user came with from the input
+     */
+    private void setFavoriteCounter(final Database database) {
+        List<Show> showsList = Util.setShowsList(database);
+
+        for (User u : database.getUsers()) {
+            for (Show s : showsList) {
+                if (u.getFavorite().contains(s.getTitle())) {
                     s.setFavoriteCounter(s.getFavoriteCounter() + 1);
                 }
             }

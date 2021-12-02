@@ -2,7 +2,7 @@ package common;
 
 /**
  * The class contains the minimum of constants needed.
- *
+ * <p>
  * You can define your own constants here or create separate files.
  */
 public final class Constants {
@@ -91,4 +91,8 @@ public final class Constants {
     public static final String SEARCH = "search";
     public static final String PREMIUM = "PREMIUM";
     public static final String BASIC = "BASIC";
+    public static final int ONE = 1;
+    public static final int TWO = 2;
+    public static final int THREE = 3;
+    public static final int ZERO = 0;
 }
